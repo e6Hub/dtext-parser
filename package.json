@@ -1,0 +1,13 @@
+{
+    "name": "dtext-parser",
+    "version": "0.1.0",
+    "description": "DText parser library",
+    "main": "./src/index.js",
+    "repository": "https://github.com/e6Hub/dtext-parser.git",
+    "author": "Saektide <real.saektide@gmail.com>",
+    "license": "MIT",
+    "scripts": {
+        "test": "node ./tests/"
+    },
+    "type": "module"
+}
