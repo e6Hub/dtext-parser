@@ -36,6 +36,11 @@ export default new Parser([
         replace: '<sup $class $style>$1</sup>'
     },
     {
+        name: 'Subscript',
+        regexp: /\[sub\]([\s\S]*?)\[\/sub\]/g,
+        replace: '<sub $class $style>$1</sub>'
+    },
+    {
         name: 'Spolier',
         regexp: /\[spoiler\]([\s\S]*?)\[\/spoiler\]/g,
         replace: '<span $class $style>$1</span>',
