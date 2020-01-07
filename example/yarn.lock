@@ -1927,10 +1927,10 @@ dotenv@^8.2.0:
   resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-8.2.0.tgz#97e619259ada750eea3e4ea3e26bceea5424b16a"
   integrity sha512-8sJ78ElpbDJBHNeBzUbUVLsqKdccaa/BXF1uPTw3GrvQTBgrQrtObr2mUrE38vzYd8cEv+m/JBfDLioYcfXoaw==
 
-dtext-parser@^0.1.0:
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/dtext-parser/-/dtext-parser-0.1.0.tgz#c8cbf120e99130738354cc387694a2041a817db4"
-  integrity sha512-gT2PwvLwoclWLLKyx1K0gBOqlWMmQw5dF0HPdZOyOxGT2Go4s56887jRhC0erMsO+LXcW4N6V3aVR40u24sBvg==
+dtext-parser@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/dtext-parser/-/dtext-parser-0.2.0.tgz#111f5ac28d4e9dd034822a1ff86862ae761fb7db"
+  integrity sha512-95kHLyHvwJYlS9kOGlyTogFXgIGFdjaap8TbeXv6lniJTlulKTDAdklPK0HPX7hbsub30FmADaW7hXUR7sMF2A==
 
 duplexer@^0.1.1:
   version "0.1.1"

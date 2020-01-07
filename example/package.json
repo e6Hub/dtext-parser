@@ -7,7 +7,7 @@
     "build": "vue-cli-service build"
   },
   "dependencies": {
-    "dtext-parser": "^0.1.0",
+    "dtext-parser": "^0.2.0",
     "tailwindcss": "^1.1.4",
     "vue": "^2.6.10"
   },
