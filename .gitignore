@@ -61,4 +61,4 @@ typings/
 .next
 
 # Test folder
-/tests
+tests/
