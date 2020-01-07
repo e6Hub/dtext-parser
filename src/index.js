@@ -85,12 +85,12 @@ export default new Parser([
     // Links
     {
         name: 'External link',
-        regexp: /("(.*?)":)?(http(s)?:\/\/(.*)\.(.[\S]+))/g,
+        regexp: /("(.*?)":)?(https?:\/\/([^\s]+))/g,
         before: (matches) => {
             return new Promise((res, rej) => {
                 let reps = [];
                 Util.so(matches, (mtch, i, next) => {
-                    let groups = mtch.match(/("(.*?)":)?(http(s)?:\/\/(.*)\.(.[\S]+))/);
+                    let groups = mtch.match(/("(.*?)":)?(https?:\/\/([^\s]+))/);
                     let displayText = groups[2] ? groups[2] : groups[3];
 
                     reps.push(`<a href="${groups[3]}" $class $style>${displayText}</a>`);
