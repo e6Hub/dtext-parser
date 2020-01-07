@@ -6,8 +6,5 @@
     "repository": "https://github.com/e6Hub/dtext-parser.git",
     "author": "Saektide <real.saektide@gmail.com>",
     "license": "MIT",
-    "scripts": {
-        "test": "node ./tests/"
-    },
     "type": "module"
 }

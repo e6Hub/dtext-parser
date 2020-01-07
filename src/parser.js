@@ -40,6 +40,14 @@ export default class Parser {
                 
                 function parseStr(matches, toReplace) {
                     Util.so(matches, (mtch, i, next) => {
+                        m.class
+                        ? toReplace[i] = toReplace[i].replace(/\$class/g, `class="${m.class}"`)
+                        : toReplace[i] = toReplace[i].replace(/\$class/g, '');
+
+                        m.style
+                        ? toReplace[i] = toReplace[i].replace(/\$style/g, `style="${m.class}"`)
+                        : toReplace[i] = toReplace[i].replace(/\$style/g, '');
+
                         newStr = newStr.replace(mtch, toReplace[i]);
                         next();
                     }).then(nextModule).catch(console.error);
@@ -64,9 +72,26 @@ export default class Parser {
                     name: m.name,
                     regexp: m.regexp,
                     replace: m.replace,
-                    before: m.before ? m.before : null
+                    before: m.before ? m.before : null,
+                    class: m.class ? m.class : null,
+                    style: m.style ? m.style : null
                 }
             );
         });
+    }
+
+    /**
+     * Set options to modules
+     * @param {Object} configs
+     */
+
+    options(configs) {
+        Object.keys(configs).forEach(moduleName => {
+            let config = configs[moduleName];
+            let indx = this.modules.findIndex(m => m.name == moduleName);
+            if (indx < 0) return; // stop function if target module doesn't exists
+            config.style ? this.modules[indx].style = config.style : null
+            config.class ? this.modules[indx].class = config.class : null
+        })
     }
 }

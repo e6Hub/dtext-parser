@@ -8,42 +8,43 @@ export default new Parser([
     {
         name: 'Bold',
         regexp: /\[b\]([\s\S]*?)\[\/b\]/g,
-        replace: '<b>$1</b>'
+        replace: '<b $class $style>$1</b>'
     },
     {
         name: 'Italics',
         regexp: /\[i\]([\s\S]*?)\[\/i\]/g,
-        replace: '<i>$1</i>'
+        replace: '<i $class $style>$1</i>'
     },
     {
         name: 'Underline',
         regexp: /\[u\]([\s\S]*?)\[\/u\]/g,
-        replace: '<u>$1</u>'
+        replace: '<u $class $style>$1</u>'
     },
     {
         name: 'Overline',
         regexp: /\[o\]([\s\S]*?)\[\/o\]/g,
-        replace: '<o>$1</o>'
+        replace: '<o $class $style>$1</o>'
     },
     {
         name: 'Strikeout',
         regexp: /\[s\]([\s\S]*?)\[\/s\]/g,
-        replace: '<s>$1</s>'
+        replace: '<s $class $style>$1</s>'
     },
     {
         name: 'Superscript',
         regexp: /\[sup\]([\s\S]*?)\[\/sup\]/g,
-        replace: '<sup>$1</sup>'
+        replace: '<sup $class $style>$1</sup>'
     },
     {
         name: 'Spolier',
         regexp: /\[spoiler\]([\s\S]*?)\[\/spoiler\]/g,
-        replace: '<span class="spoiler">$1</span>'
+        replace: '<span $class $style>$1</span>',
+        class: 'spoiler'
     },
     {
         name: 'Inline code',
         regexp: /`(.*?)`/g,
-        replace: '<code>$1</code>'
+        replace: '<code $class $style>$1</code>'
     },
     // Colors
     {
@@ -87,7 +88,7 @@ export default new Parser([
                     let groups = mtch.match(/("(.*?)":)?(http(s)?:\/\/(.*)\.(.[\S]+))/);
                     let displayText = groups[2] ? groups[2] : groups[3];
 
-                    reps.push(`<a href="${groups[3]}">${displayText}</a>`);
+                    reps.push(`<a href="${groups[3]}" $class $style>${displayText}</a>`);
                     next();
                 })
                 .then(() => {
@@ -100,17 +101,17 @@ export default new Parser([
     {
         name: 'Quote',
         regexp: /\[quote\]([\s\S]*?)\[\/quote\]/g,
-        replace: '<blockquote>$1</blockquote>'
+        replace: '<blockquote $class $style>$1</blockquote>'
     },
     {
         name: 'Code',
         regexp: /\[code\]([\s\S]*?)\[\/code\]/g,
-        replace: '<pre>$1</pre>'
+        replace: '<pre $class $style>$1</pre>'
     },
     {
         name: 'Header',
         regexp: /^h(1|2|3|4|5|6)\.(.*)/gm,
-        replace: '<h$1>$2</h$1>'
+        replace: '<h$1 $class $style>$2</h$1>'
     },
     {
         name: 'Section',
