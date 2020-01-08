@@ -33,7 +33,7 @@ export default class Parser {
                         toReplace.push(r);
                         next();
                     }).then(parseStr(matches, toReplace)).catch(console.error);
-                });
+                }).catch(console.error);
                 else Util.so(matches, (mtch, i, next) => { toReplace.push(mtch.replace(m.regexp, m.replace)); next(); })
                 .then(parseStr(matches, toReplace))
                 .catch(console.error);
@@ -41,11 +41,11 @@ export default class Parser {
                 function parseStr(matches, toReplace) {
                     Util.so(matches, (mtch, i, next) => {
                         m.class
-                        ? toReplace[i] = toReplace[i].replace(/\$class/g, `class="${m.class}"`)
+                        ? toReplace[i] = toReplace[i].replace(/\$class/g, ` class="${m.class}"`)
                         : toReplace[i] = toReplace[i].replace(/\$class/g, '');
 
                         m.style
-                        ? toReplace[i] = toReplace[i].replace(/\$style/g, `style="${m.class}"`)
+                        ? toReplace[i] = toReplace[i].replace(/\$style/g, ` style="${m.class}"`)
                         : toReplace[i] = toReplace[i].replace(/\$style/g, '');
 
                         newStr = newStr.replace(mtch, toReplace[i]);
@@ -84,7 +84,6 @@ export default class Parser {
      * Set options to modules
      * @param {Object} configs
      */
-
     options(configs) {
         Object.keys(configs).forEach(moduleName => {
             let config = configs[moduleName];

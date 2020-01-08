@@ -41,6 +41,11 @@ export default new Parser([
         replace: '<sub$class$style>$1</sub>'
     },
     {
+        name: 'Username',
+        regexp: /@([^\s]+)/g,
+        replace: '<b>@$1</b>'
+    },
+    {
         name: 'Spolier',
         regexp: /\[spoiler\]([\s\S]*?)\[\/spoiler\]/g,
         replace: '<span$class$style>$1</span>',
@@ -102,6 +107,82 @@ export default new Parser([
             });
         }
     },
+    {
+        name: 'Wiki link',
+        regexp: /\[\[([\w]+)?(#([\w]+))?(\|(.*))?\]\]/g,
+        before: (matches) => {
+            return new Promise((res, rej) => {
+                try {
+                    let reps = [];
+                    Util.so(matches, (mtch, i, next) => {
+                        let groups = mtch.match(/\[\[([\w]+)?(#([\w]+))?(\|(.*))?\]\]/);
+                        let displayText = groups[6] ? groups[6] : groups[1];
+                        
+                        reps.push(`<a href="https://e621.net/wiki/show/${groups[1]}"$class$style>${displayText}</a>`);
+                        next();
+                    }).then(() => {
+                        res(reps);
+                    });
+                } catch(e) { rej(e) }
+            });
+        }
+
+    },
+    {
+        name: 'Tag link',
+        regexp: /{{([\w]+)(\|(.*))?}}/g,
+        before: (matches) => {
+            return new Promise((res, rej) => {
+                try {
+                    let reps = [];
+                    Util.so(matches, (mtch, i, next) => {
+                        let groups = mtch.match(/{{([\w]+)(\|(.*))?}}/);
+                        let displayText = groups[3] ? groups[3] : groups[1];
+                        let tags = groups[3].replace(/ /g, '+');
+
+                        reps.push(`<a href="https://e621.net/post/search?tags=${tags}"$class$style>${displayText}</a>`);
+                        next();
+                    }).then(() => {
+                        res(reps);
+                    });
+                } catch(e) { rej(e) }
+            })
+        }
+    },
+    {
+        name: 'Intern link',
+        regexp: /(post|forum|comment|blip|pool|set|takedown|record|ticket|category)\s#(\d*[^\s\W])/g,
+        before: (matches) => {
+            return new Promise((res, rej) => {
+                try {
+                    let reps = [];
+                    Util.so(matches, (mtch, i, next) => {
+                        let groups = mtch.match(/(post|forum|comment|blip|pool|set|takedown|record|ticket|category)\s#(\d*[^\s\W])/);
+                        let linkType = groups[1];
+                        let linkId = groups[2];
+                        let nextPath;
+
+                        switch (linkType) {
+                            case 'record':
+                                nextPath = 'user_record/show/'
+                                break;
+                            case 'category':
+                                nextPath = 'forum?category='
+                                break;
+                            default:
+                                nextPath = `${linkType}/show/`
+                                break;
+                        }
+
+                        reps.push(`<a href="https://e621.net/${nextPath}${linkId}"$class$style>${linkType} #${linkId}</a>`);
+                        next();
+                    }).then(() => {
+                        res(reps);
+                    })
+                } catch(e) { rej(e) }
+            })
+        }
+    },
     // Block formating
     {
         name: 'Quote',
@@ -129,16 +210,10 @@ export default new Parser([
                         isExpanded = !groups[1],
                         title = groups[3] ? groups[3] : 'Click to expand',
                         collapseTitle = groups[3] ? groups[3] : 'Click to collapse',
-                        el;
-                    
-                    if (isExpanded) el = `<div class="section expanded">
-                    <div class="section-collapse-title">${title}</div>
-                    <div class="section-collapsed-title">${collapseTitle}</div>
-                    <div class="section-content">${groups[4]}</div></div>`
-                    else el = `<div class="section collapsed">
-                    <div class="section-collapse-title">${title}</div>
-                    <div class="section-collapsed-title">${collapseTitle}</div>
-                    <div class="section-content hidden">${groups[4]}</div></div>`;
+                        el = `<div class="section ${isExpanded ? 'expanded' : 'collapsed'}">\n`+
+                        `<div class="section-collapse-title">${title}</div>\n`+
+                        `<div class="section-collapsed-title">${collapseTitle}</div>\n`+
+                        `<div class="section-content">${groups[4]}</div></div>`;
 
                     reps.push(el);
                     next();
