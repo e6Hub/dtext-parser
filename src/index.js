@@ -236,7 +236,7 @@ export default new Parser([
     },
     {
         name: 'Breaklines',
-        regexp: /[\n|\r|\n\r]/gm,
+        regexp: /[\n|\r|\n\r]/g,
         before: (matches) => {
             return new Promise(async (res, rej) => {
                 let reps = [];
