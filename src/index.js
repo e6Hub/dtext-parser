@@ -61,9 +61,9 @@ export default new Parser([
         name: 'Color',
         regexp: /\[color=(.*)\]([\s\S]*)\[\/color\]/g,
         before: (matches) => {
-            return new Promise((res, rej) => {
+            return new Promise(async (res, rej) => {
                 let reps = [];
-                Util.so(matches, (mtch, i, next) => {
+                await Util.each(matches, (mtch, i) => {
                     let groups = mtch.match(/\[color=(.*?)\](.[\s\S]*?)\[\/color\]/);
                     let props;
                     switch (groups[1]) {
@@ -79,11 +79,8 @@ export default new Parser([
                     }
                     
                     reps.push(`<span ${props}>${groups[2]}</span>`);
-                    next();
                 })
-                .then(() => {
-                    res(reps);
-                });
+                res(reps);
             });
         }
     },
@@ -92,37 +89,34 @@ export default new Parser([
         name: 'External link',
         regexp: /("(.*?)":)?(https?:\/\/([^\s]+))/g,
         before: (matches) => {
-            return new Promise((res, rej) => {
+            return new Promise(async (res, rej) => {
                 let reps = [];
-                Util.so(matches, (mtch, i, next) => {
+                await Util.each(matches, (mtch, i) => {
                     let groups = mtch.match(/("(.*?)":)?(https?:\/\/([^\s]+))/);
                     let displayText = groups[2] ? groups[2] : groups[3];
 
                     reps.push(`<a href="${groups[3]}"$class$style>${displayText}</a>`);
-                    next();
+
                 })
-                .then(() => {
-                    res(reps);
-                });
+                res(reps);
             });
         }
     },
     {
         name: 'Wiki link',
-        regexp: /\[\[([\w]+)?(#([\w]+))?(\|(.*))?\]\]/g,
+        regexp: /\[\[(.*?)?(#(.*))?(\|(.*?))?\]\]/g,
         before: (matches) => {
-            return new Promise((res, rej) => {
+            return new Promise(async (res, rej) => {
                 try {
                     let reps = [];
-                    Util.so(matches, (mtch, i, next) => {
-                        let groups = mtch.match(/\[\[([\w]+)?(#([\w]+))?(\|(.*))?\]\]/);
-                        let displayText = groups[6] ? groups[6] : groups[1];
+                    await Util.each(matches, (mtch, i) => {
+                        let groups = mtch.match(/\[\[(.*?)?(#(.*))?(\|(.*?))?\]\]/),
+                            finalUrl = `https://e621.net/wiki_pages/${groups[1]}${groups[2]}`,
+                            displayText = groups[5] ? groups[5] : `${groups[1]}${groups[2]}`;
                         
-                        reps.push(`<a href="https://e621.net/wiki/show/${groups[1]}"$class$style>${displayText}</a>`);
-                        next();
-                    }).then(() => {
-                        res(reps);
-                    });
+                        reps.push(`<a href="${finalUrl}"$class$style>${displayText}</a>`);
+                    })
+                    res(reps);
                 } catch(e) { rej(e) }
             });
         }
@@ -132,19 +126,17 @@ export default new Parser([
         name: 'Tag link',
         regexp: /{{([\w]+)(\|(.*))?}}/g,
         before: (matches) => {
-            return new Promise((res, rej) => {
+            return new Promise(async (res, rej) => {
                 try {
                     let reps = [];
-                    Util.so(matches, (mtch, i, next) => {
+                    await Util.each(matches, (mtch, i) => {
                         let groups = mtch.match(/{{([\w]+)(\|(.*))?}}/);
                         let displayText = groups[3] ? groups[3] : groups[1];
                         let tags = groups[3].replace(/ /g, '+');
 
                         reps.push(`<a href="https://e621.net/post/search?tags=${tags}"$class$style>${displayText}</a>`);
-                        next();
-                    }).then(() => {
-                        res(reps);
-                    });
+                    })
+                    res(reps);
                 } catch(e) { rej(e) }
             })
         }
@@ -153,10 +145,10 @@ export default new Parser([
         name: 'Intern link',
         regexp: /(post|forum|comment|blip|pool|set|takedown|record|ticket|category)\s#(\d*[^\s\W])/g,
         before: (matches) => {
-            return new Promise((res, rej) => {
+            return new Promise(async (res, rej) => {
                 try {
                     let reps = [];
-                    Util.so(matches, (mtch, i, next) => {
+                    await Util.each(matches, (mtch, i) => {
                         let groups = mtch.match(/(post|forum|comment|blip|pool|set|takedown|record|ticket|category)\s#(\d*[^\s\W])/);
                         let linkType = groups[1];
                         let linkId = groups[2];
@@ -175,10 +167,8 @@ export default new Parser([
                         }
 
                         reps.push(`<a href="https://e621.net/${nextPath}${linkId}"$class$style>${linkType} #${linkId}</a>`);
-                        next();
-                    }).then(() => {
-                        res(reps);
                     })
+                    res(reps);
                 } catch(e) { rej(e) }
             })
         }
@@ -203,9 +193,9 @@ export default new Parser([
         name: 'Section',
         regexp: /\[section(,expanded)?(=(.*)?)?\]([\s\S]*?)\[\/section\]/g,
         before: (matches) => {
-            return new Promise((res, rej) => {
+            return new Promise(async (res, rej) => {
                 let reps = [];
-                Util.so(matches, (mtch, i, next) => {
+                await Util.each(matches, (mtch, i) => {
                     let groups = mtch.match(/\[section(,expanded)?(=(.*)?)?\]([\s\S]*?)\[\/section\]/),
                         isExpanded = !groups[1],
                         title = groups[3] ? groups[3] : 'Click to expand',
@@ -216,12 +206,27 @@ export default new Parser([
                         `<div class="section-content">${groups[4]}</div></div>`;
 
                     reps.push(el);
-                    next();
                 })
-                .then(() => {
-                    res(reps);
-                })
+                res(reps);
             });
         }
-    }
+    },
+    {
+        name: 'Paragraph',
+        regexp: /\n(.*[\s\S]+)/g,
+        replace: '<p>$1</p>'
+    },
+    {
+        name: 'Breaklines',
+        regexp: /[\n|\r|\n\r]/gm,
+        before: (matches) => {
+            return new Promise(async (res, rej) => {
+                let reps = [];
+                await Util.each(matches, (mtch, i) => {
+                    reps.push('<br/>');
+                })
+                res(reps);
+            })
+        }
+    },
 ]);
