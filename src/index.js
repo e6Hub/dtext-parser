@@ -59,12 +59,12 @@ export default new Parser([
     // Colors
     {
         name: 'Color',
-        regexp: /\[color=(.*)\]([\s\S]*)\[\/color\]/g,
+        regexp: /\[color=(.*?)\](.*?)\[\/color\]/g,
         before: (matches) => {
             return new Promise(async (res, rej) => {
                 let reps = [];
                 await Util.each(matches, (mtch, i) => {
-                    let groups = mtch.match(/\[color=(.*?)\](.[\s\S]*?)\[\/color\]/);
+                    let groups = mtch.match(/\[color=(.*?)\](.*?)\[\/color\]/);
                     let props;
                     switch (groups[1]) {
                         case 'artist': // #F2AC08
@@ -111,8 +111,8 @@ export default new Parser([
                     let reps = [];
                     await Util.each(matches, (mtch, i) => {
                         let groups = mtch.match(/\[\[(.*?)?(#(.*))?(\|(.*?))?\]\]/),
-                            finalUrl = `https://e621.net/wiki_pages/${groups[1]}${groups[2]}`,
-                            displayText = groups[5] ? groups[5] : `${groups[1]}${groups[2]}`;
+                            finalUrl = `https://e621.net/wiki_pages/${groups[1]}${groups[2] ? groups[2] : ''}`,
+                            displayText = groups[5] ? groups[5] : `${groups[1]}${groups[2] ? groups[2] : ''}`;
                         
                         reps.push(`<a href="${finalUrl}"$class$style>${displayText}</a>`);
                     })
@@ -124,17 +124,17 @@ export default new Parser([
     },
     {
         name: 'Tag link',
-        regexp: /{{([\w]+)(\|(.*))?}}/g,
+        regexp: /{{(.*?)(\|(.*))?}}/g,
         before: (matches) => {
             return new Promise(async (res, rej) => {
                 try {
                     let reps = [];
                     await Util.each(matches, (mtch, i) => {
-                        let groups = mtch.match(/{{([\w]+)(\|(.*))?}}/);
+                        let groups = mtch.match(/{{(.*?)(\|(.*))?}}/);
                         let displayText = groups[3] ? groups[3] : groups[1];
-                        let tags = groups[3].replace(/ /g, '+');
+                        let tags = groups[1].replace(/ /g, '+');
 
-                        reps.push(`<a href="https://e621.net/post/search?tags=${tags}"$class$style>${displayText}</a>`);
+                        reps.push(`<a href="https://e621.net/posts?tags=${tags}"$class$style>${displayText}</a>`);
                     })
                     res(reps);
                 } catch(e) { rej(e) }
@@ -149,20 +149,38 @@ export default new Parser([
                 try {
                     let reps = [];
                     await Util.each(matches, (mtch, i) => {
-                        let groups = mtch.match(/(post|forum|comment|blip|pool|set|takedown|record|ticket|category)\s#(\d*[^\s\W])/);
+                        let groups = mtch.match(/(post|forum|comment|blip|pool|set|takedown|record|ticket)\s#(\d*[^\s\W])/);
                         let linkType = groups[1];
                         let linkId = groups[2];
-                        let nextPath;
+                        let nextPath = '';
 
                         switch (linkType) {
+                            case 'post':
+                                nextPath = 'posts/'
+                                break;
+                            case 'forum':
+                                nextPath = 'forum_posts/'
+                                break;
+                            case 'comment':
+                                nextPath = 'comments/'
+                                break;
+                            case 'blips':
+                                nextPath = 'blips/'
+                                break;
+                            case 'pool':
+                                nextPath = 'posts/'
+                                break;
+                            case 'sets':
+                                nextPath = 'sets/'
+                                break;
+                            case 'takedown':
+                                nextPath = 'takedowns/'
+                                break;
                             case 'record':
-                                nextPath = 'user_record/show/'
+                                nextPath = 'user_feedbacks/'
                                 break;
-                            case 'category':
-                                nextPath = 'forum?category='
-                                break;
-                            default:
-                                nextPath = `${linkType}/show/`
+                            case 'ticket':
+                                nextPath = 'tickets/'
                                 break;
                         }
 
