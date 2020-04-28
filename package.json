@@ -7,8 +7,9 @@
     "author": "Saektide <real.saektide@gmail.com>",
     "license": "MIT",
     "type": "module",
-    "keywords": ["dtext", "parser", "e621"],
-    "dependencies": {
-        "axios": "^0.19.1"
-    }
+    "keywords": [
+        "dtext",
+        "parser",
+        "e621"
+    ]
 }
