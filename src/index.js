@@ -71,10 +71,10 @@ export default new Parser([
                         case 'character': // #0A0
                         case 'copyright': // #D0D
                         case 'species': // #ED5D1F
-                            props = `class="${mtch}"`
+                            props = `class="${groups[1]}"`
                         break;
                         default:
-                            props = `style="color:${mtch}"`
+                            props = `style="color:${groups[1]}"`
                         break;
                     }
                     

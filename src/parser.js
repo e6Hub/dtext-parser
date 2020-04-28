@@ -20,41 +20,44 @@ export default class Parser {
      * @param {String} string
      */
     parse(string) {
-        return new Promise((res, rej) => {
-            let newStr = string;
-            Util.so(this.modules, (m, i, nextModule) => {
-                let matches = string.match(m.regexp),
-                    toReplace = [];
-    
-                if (!matches) return nextModule(); 
-    
-                if (m.before) m.before(matches).then((repls) => {
-                    Util.so(repls, (r, i, next) => {
-                        toReplace.push(r);
-                        next();
-                    }).then(parseStr(matches, toReplace)).catch(console.error);
-                }).catch(console.error);
-                else Util.so(matches, (mtch, i, next) => { toReplace.push(mtch.replace(m.regexp, m.replace)); next(); })
-                .then(parseStr(matches, toReplace))
-                .catch(console.error);
-                
-                function parseStr(matches, toReplace) {
-                    Util.so(matches, (mtch, i, next) => {
-                        m.class
-                        ? toReplace[i] = toReplace[i].replace(/\$class/g, ` class="${m.class}"`)
-                        : toReplace[i] = toReplace[i].replace(/\$class/g, '');
+        return new Promise(async (res, rej) => {
+            this.newStr = string;
+            await Util.each(this.modules, async (m, i) => {
+                let matches = this.newStr.match(m.regexp),
+                    toReplace = [],
+                    parseStr = () => {
+                    try {
+                        Util.each(matches, (mtch, i) => {
+                            m.class
+                            ? toReplace[i] = toReplace[i].replace(/\$class/g, ` class="${m.class}"`)
+                            : toReplace[i] = toReplace[i].replace(/\$class/g, '');
 
-                        m.style
-                        ? toReplace[i] = toReplace[i].replace(/\$style/g, ` style="${m.class}"`)
-                        : toReplace[i] = toReplace[i].replace(/\$style/g, '');
+                            m.style
+                            ? toReplace[i] = toReplace[i].replace(/\$style/g, ` style="${m.class}"`)
+                            : toReplace[i] = toReplace[i].replace(/\$style/g, '');
 
-                        newStr = newStr.replace(mtch, toReplace[i]);
-                        next();
-                    }).then(nextModule).catch(console.error);
+                            this.newStr = this.newStr.replace(mtch, toReplace[i]);
+                        })
+                    } catch (e) {
+                        console.error(e)
+                    }
                 }
-            }).then(() => {
-                res(newStr);
+    
+                if (!matches) return;
+    
+                if (m.before) {
+                    await m.before(matches).then(async (repls) => {
+                        await Util.each(repls, (r, i) => {
+                            toReplace.push(r);
+                        })
+                        parseStr(matches, toReplace)
+                    }).catch(console.error);
+                    return;
+                }
+                await Util.each(matches, (mtch, i) => { toReplace.push(mtch.replace(m.regexp, m.replace)); })
+                parseStr(matches, toReplace)
             });
+            res(this.newStr);
         });
     }
 

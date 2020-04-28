@@ -2,25 +2,13 @@
 
 export default new class Util {
     /**
-     * a forEach function with callback when the forEach ends
-     * @param {Array} a 
-     * @param {Function} forEachCallback 
-     * @param {Boolean} debug
+     * an async forEach
+     * @param {Array} arr
+     * @param {Function} cb
      */
-    so(a, forEachCallback) {
-        return new Promise((res, rej) => {
-            try {
-                let count = 0;
-                if (!Array.isArray(a)) throw new Error('Array expected');
-                a.forEach((item, i) => {
-                    forEachCallback(item, i, () => {
-                        count++;
-                        if (count === a.length) {
-                            res();
-                        }
-                    });
-                });
-            } catch(err) { rej(err) }
-        });
+    async each(arr, cb) {
+        for (let i = 0;i < arr.length;i++) {
+            await cb(arr[i], i, arr);
+        }
     }
 }
