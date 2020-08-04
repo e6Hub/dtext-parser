@@ -18,7 +18,7 @@ npm install dtext-parser -s
 import DText from 'dtext-parser'
 
 DText.parse('h1.DText header')
-.then(console.log);
+.then(console.log); // <h1>DText header</h1>
 ```
 
 ### Config
@@ -28,7 +28,7 @@ import DText from 'dtext-parser'
 
 DText.options({
     "External link": {
-        style: "color:red; font-size:14pt"
+        style: "color:red; font-size:14pt",
         class: "external-link"
     }
 });
