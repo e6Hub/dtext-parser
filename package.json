@@ -1,15 +1,26 @@
 {
-    "name": "dtext-parser",
-    "version": "0.4.0",
-    "description": "DText parser library",
-    "main": "./src/index.js",
-    "repository": "https://github.com/e6Hub/dtext-parser.git",
-    "author": "Saektide <real.saektide@gmail.com>",
-    "license": "MIT",
-    "type": "module",
-    "keywords": [
-        "dtext",
-        "parser",
-        "e621"
-    ]
+  "name": "dtext-parser",
+  "version": "0.5.0",
+  "description": "DText parser library",
+  "main": "./src/index.js",
+  "repository": "https://github.com/e6Hub/dtext-parser.git",
+  "author": "Saektide <real.saektide@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "test": "jest --verbose"
+  },
+  "keywords": [
+    "dtext",
+    "parser",
+    "e621"
+  ],
+  "devDependencies": {
+    "jest": "^26.6.3"
+  },
+  "jest": {
+    "testTimeout": 20000
+  },
+  "engines": {
+    "node": ">=12.13.0"
+  }
 }
