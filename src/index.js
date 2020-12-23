@@ -92,12 +92,12 @@ module.exports = new Parser([
   // Links
   {
     name: 'External link',
-    regexp: /("(.*?)":)?(http(s)?:\/\/([\S]*))/g,
+    regexp: /("(.*?)":)?(http(s)?:\/\/([\S]*)[^)])/g,
     before: (matches) => {
       return new Promise(async (res, rej) => {
         let reps = [];
         await Util.each(matches, (mtch, i) => {
-          let groups = mtch.match(/("(.*?)":)?(http(s)?:\/\/([\S]*))/);
+          let groups = mtch.match(/("(.*?)":)?(http(s)?:\/\/([\S]*)[^)])/);
           let displayText = groups[2] ? groups[2] : groups[3];
 
           reps.push(`<a href="${groups[3]}"%a>${displayText}</a>`);
@@ -124,7 +124,6 @@ module.exports = new Parser([
         } catch (e) { rej(e) }
       });
     }
-
   },
   {
     name: 'Tag link',
@@ -160,35 +159,35 @@ module.exports = new Parser([
 
             switch (linkType) {
               case 'post':
-                nextPath = 'posts/'
+                nextPath = 'posts'
                 break;
               case 'forum':
-                nextPath = 'forum_posts/'
+                nextPath = 'forum_posts'
                 break;
               case 'comment':
-                nextPath = 'comments/'
+                nextPath = 'comments'
                 break;
               case 'blips':
-                nextPath = 'blips/'
+                nextPath = 'blips'
                 break;
               case 'pool':
-                nextPath = 'posts/'
+                nextPath = 'posts'
                 break;
               case 'sets':
-                nextPath = 'sets/'
+                nextPath = 'sets'
                 break;
               case 'takedown':
-                nextPath = 'takedowns/'
+                nextPath = 'takedowns'
                 break;
               case 'record':
-                nextPath = 'user_feedbacks/'
+                nextPath = 'user_feedbacks'
                 break;
               case 'ticket':
-                nextPath = 'tickets/'
+                nextPath = 'tickets'
                 break;
             }
 
-            reps.push(`<a href="https://e621.net/${nextPath}${linkId}"%a>${linkType} #${linkId}</a>`);
+            reps.push(`<a href="https://e621.net/${nextPath}/${linkId}"%a>${linkType} #${linkId}</a>`);
           })
           res(reps);
         } catch (e) { rej(e) }

@@ -8,11 +8,19 @@ test('parse scenario Simple article', () => {
     });
 });
 
-test('parse scenario Paragraphs', () => {
+test('parse scenario Paragraphs: multiline', () => {
   return dtext.parse('Hello foo!\nHello bar!')
     .then((result) => {
       expect(result).toBe
         ('<p>Hello foo!</p><p>Hello bar!</p>');
+    });
+});
+
+test('parse scenario Link: skip parentheses', () => {
+  return dtext.parse('(https://github.com)')
+    .then((result) => {
+      expect(result).toBe
+        ('<p>(<a href="https://github.com">https://github.com</a>)</p>');
     });
 });
 
