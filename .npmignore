@@ -1,2 +1,6 @@
-# Internal dir
-internal/
+node_modules
+tests
+playground
+jest.config.js
+*.tgz
+.github
