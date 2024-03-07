@@ -37,8 +37,7 @@ html, body {
   min-width: 100%;
   max-width: 100%;
   resize: none;
-  height: 12rem;
-  max-height: 12rem;
+  height: 24rem;
   background-color: #222;
   color: var(--light);
   padding: 1rem;
@@ -56,6 +55,15 @@ html, body {
   width: 100%;
   padding: 2rem;
   border-radius: 0.5rem;
+}
+
+#container #sections {
+  display: flex;
+  gap: 1rem;
+}
+
+#container #sections .section {
+  width: 100%;
 }
 
 code {
