@@ -3,11 +3,11 @@ DText is the e621's markdown system, it's based on many languages like BBCode, M
 
 ## 📦 Install
 ```
-npm i -S dtext-parser
+npm i dtext-parser
 ```
 or
 ```
-yarn add dtext-parser
+pnpm add dtext-parser
 ```
 
 ## 🧪 Usage
@@ -43,3 +43,9 @@ DText.options({
 DText.parse('https://github.com').then(console.log);
 // <a href="https://github.com" class="extern" style="color: red;">https://github.com</a>
 ```
+
+## 🧑‍💻 Build
+
+1. Assuming you've already cloned this repo, install the packages with `pnpm i`.
+2. Source code directory is `src/`, test unit files are located at `tests/`.
+3. For unit testing, you can use `pnpm test`, for individual or playground testing, you can use the scripts of `playground/` directory.

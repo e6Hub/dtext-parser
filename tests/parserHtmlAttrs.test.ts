@@ -1,4 +1,4 @@
-const dtext = require('../');
+import dtext from '../src';
 
 test('parse html attributes', () => {
   dtext.options({
@@ -16,7 +16,7 @@ test('parse html attributes', () => {
     }
   });
 
-  return dtext.parse('https://google.com').then((result) => {
+  return dtext.parse('https://google.com').then((result:string) => {
     expect(result).toBe
       ('<a href="https://google.com" style="color: red;" class="extern">https://google.com</a>');
   });
